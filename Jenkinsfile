@@ -1,26 +1,27 @@
 pipeline {
     agent any
+
     stages {
         stage('Run Python') {
             steps {
                 bat 'docker run --rm python:3.10 python --version'
             }
         }
-    }
-}
 
-
-    stages {
         stage('Install Dependencies') {
             steps {
-                // Gunakan 'sh' karena di dalam container Python berbasis Linux
-                sh 'pip install -r requirements.txt'
+                // Jalankan pip install di dalam container python
+                bat '''
+                    docker run --rm -v "%cd%":/app -w /app python:3.10 pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest test_app.py'
+                bat '''
+                    docker run --rm -v "%cd%":/app -w /app python:3.10 pytest test_app.py
+                '''
             }
         }
 
@@ -32,7 +33,7 @@ pipeline {
                 }
             }
             steps {
-                echo "Simulating deploy from branch ${env.BRANCH_NAME}"
+                echo "🚀 Simulating deploy from branch ${env.BRANCH_NAME}"
             }
         }
     }
