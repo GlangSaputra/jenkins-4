@@ -2,13 +2,15 @@ pipeline {
     agent {
         docker {
             image 'python:3.10'
-            args '-u root'
+            // Tambahkan mapping direktori agar Docker bisa mengenali path Windows
+            args '-v /var/jenkins_home:/var/jenkins_home -u root'
         }
     }
 
     stages {
         stage('Install Dependencies') {
             steps {
+                // Gunakan 'sh' karena di dalam container Python berbasis Linux
                 sh 'pip install -r requirements.txt'
             }
         }
