@@ -1,11 +1,14 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10'
-            // Tambahkan mapping direktori agar Docker bisa mengenali path Windows
-            args '-v /var/jenkins_home:/var/jenkins_home -u root'
+    agent any
+    stages {
+        stage('Run Python') {
+            steps {
+                bat 'docker run --rm python:3.10 python --version'
+            }
         }
     }
+}
+
 
     stages {
         stage('Install Dependencies') {
